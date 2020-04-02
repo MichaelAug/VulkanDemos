@@ -17,6 +17,8 @@ add_executable(VulkanTutorial
 	src/main.cpp)
 
 
+target_compile_options(${PROJECT_NAME} PUBLIC -Wall -Wextra)
+
 target_link_libraries(${PROJECT_NAME}
 	PUBLIC
 		vulkan
