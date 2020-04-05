@@ -5,6 +5,8 @@
 #include <functional>
 #include <cstdlib>
 
+#define VT_DEBUG
+
 const int WIDTH = 800;
 const int HEIGHT = 600;
 
@@ -88,11 +90,24 @@ private:
 
         vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, extensions.data());
 
-        std::cout << "available extensions:" << std::endl;
+        #ifdef VT_DEBUG
+            std::cout << "available Vulkan extensions:" << std::endl;
 
-        for (const auto& extension : extensions) {
-            std::cout << "\t" << extension.extensionName << std::endl;
-        }
+            for (const auto &extension : extensions)
+            {
+                std::cout << "\t" << extension.extensionName << std::endl;
+            }
+
+            uint32_t count;
+            const char **glfwextensions = glfwGetRequiredInstanceExtensions(&count);
+
+            std::cout << "extensions required by GLFW:" << std::endl;
+
+            for (uint32_t i = 0; i < count; ++i)
+            {
+                std::cout << "\t" << *glfwextensions << std::endl;
+            }
+        #endif
     }
 
     void mainLoop()

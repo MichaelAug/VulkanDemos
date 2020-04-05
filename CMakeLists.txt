@@ -17,7 +17,8 @@ add_executable(VulkanTutorial
 	src/main.cpp)
 
 
-target_compile_options(${PROJECT_NAME} PUBLIC -Wall -Wextra)
+# can Define VT_DEBUG for debug calls (remove in release) by adding -DVT_DEBUG
+target_compile_options(${PROJECT_NAME} PUBLIC -Wall -pedantic -Wextra)
 
 target_link_libraries(${PROJECT_NAME}
 	PUBLIC
