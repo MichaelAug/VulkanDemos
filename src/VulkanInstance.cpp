@@ -6,12 +6,15 @@ VulkanInstance::VulkanInstance()
 	{
 		valLayers = std::make_unique<ValidationLayers>();
 	}
+
+	deviceManager = std::make_unique<DeviceManager>();
 }
 
 void VulkanInstance::initVulkan()
 {
 	createInstance();
 	valLayers->setupDebugMessenger(instance);
+	deviceManager->pickPhysicalDevice(instance);
 }
 
 void VulkanInstance::createInstance()

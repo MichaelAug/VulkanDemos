@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <memory>
 #include "ValidationLayers.hpp"
+#include "DeviceManager.hpp"
 
 class VulkanInstance
 {
@@ -18,9 +19,11 @@ public:
 private:
 	std::unique_ptr<ValidationLayers> valLayers;
 
+	std::unique_ptr<DeviceManager> deviceManager;
+
 	VkInstance instance;
 
-	void createInstance();
-
 	std::vector<const char *> getRequiredExtensions();
+
+	void createInstance();
 };
