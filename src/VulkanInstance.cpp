@@ -15,6 +15,7 @@ void VulkanInstance::initVulkan()
 	createInstance();
 	valLayers->setupDebugMessenger(instance);
 	deviceManager->pickPhysicalDevice(instance);
+	deviceManager->createLogicalDevice();
 }
 
 void VulkanInstance::createInstance()
@@ -82,6 +83,7 @@ std::vector<const char *> VulkanInstance::getRequiredExtensions()
 void VulkanInstance::cleanup()
 {
 	valLayers->cleanup(instance);
+	deviceManager->cleanup();
 
 	vkDestroyInstance(instance, nullptr);
 }

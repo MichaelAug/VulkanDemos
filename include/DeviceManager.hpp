@@ -17,9 +17,15 @@ struct QueueFamilyIndices
 class DeviceManager
 {
 public:
+	DeviceManager();
 	void pickPhysicalDevice(VkInstance &instance);
-
+	void createLogicalDevice();
+	void cleanup();
+	
 private:
+	VkPhysicalDevice physicalDevice;
+	VkDevice device;
+	VkQueue graphicsQueue;
 
 	QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
 
