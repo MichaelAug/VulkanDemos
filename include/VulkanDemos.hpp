@@ -16,7 +16,7 @@ public:
     void run()
     {
         InitWindow();
-        vkInstance->initVulkan();
+        vkInstance->initVulkan(window);
         mainLoop();
         cleanup();
     }

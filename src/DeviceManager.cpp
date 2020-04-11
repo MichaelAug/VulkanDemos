@@ -2,10 +2,11 @@
 #include <stdexcept>
 #include <vector>
 #include "ValidationLayers.hpp"
+#include <set>
 
 DeviceManager::DeviceManager() : physicalDevice(VK_NULL_HANDLE) {}
 
-void DeviceManager::pickPhysicalDevice(VkInstance &instance)
+void DeviceManager::pickPhysicalDevice(VkInstance &instance, VkSurfaceKHR &surface)
 {
 	uint32_t deviceCount = 0;
 	vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
@@ -21,7 +22,7 @@ void DeviceManager::pickPhysicalDevice(VkInstance &instance)
 	// Find first suitable GPU
 	for (const auto &device : devices)
 	{
-		if (isDeviceSuitable(device))
+		if (isDeviceSuitable(device, surface))
 		{
 			physicalDevice = device;
 			break;
@@ -35,7 +36,7 @@ void DeviceManager::pickPhysicalDevice(VkInstance &instance)
 }
 
 //TODO: implement better GPU checking
-bool DeviceManager::isDeviceSuitable(VkPhysicalDevice device)
+bool DeviceManager::isDeviceSuitable(const VkPhysicalDevice &device, const VkSurfaceKHR &surface)
 {
 	// VkPhysicalDeviceProperties deviceProperties;
 	// vkGetPhysicalDeviceProperties(device, &deviceProperties);
@@ -43,12 +44,14 @@ bool DeviceManager::isDeviceSuitable(VkPhysicalDevice device)
 	// VkPhysicalDeviceFeatures deviceFeatures;
 	// vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
 
-	QueueFamilyIndices indices = findQueueFamilies(device);
+	QueueFamilyIndices indices = findQueueFamilies(device, surface);
 
 	return indices.isComplete();
 }
 
-QueueFamilyIndices DeviceManager::findQueueFamilies(VkPhysicalDevice device)
+/* Could add logic to prefer devices that support drawing and
+ presentation in the same queue for improved performance*/
+QueueFamilyIndices DeviceManager::findQueueFamilies(const VkPhysicalDevice &device, const VkSurfaceKHR &surface)
 {
 	QueueFamilyIndices indices;
 
@@ -67,6 +70,13 @@ QueueFamilyIndices DeviceManager::findQueueFamilies(VkPhysicalDevice device)
 			indices.graphicsFamily = i;
 		}
 
+		VkBool32 presentSupport = false;
+		vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &presentSupport);
+
+		if (presentSupport)
+		{
+			indices.presentFamily = i;
+		}
 		if (indices.isComplete())
 		{
 			break;
@@ -77,25 +87,32 @@ QueueFamilyIndices DeviceManager::findQueueFamilies(VkPhysicalDevice device)
 	return indices;
 }
 
-void DeviceManager::createLogicalDevice()
+void DeviceManager::createLogicalDevice(VkSurfaceKHR &surface)
 {
-	QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
+	QueueFamilyIndices indices = findQueueFamilies(physicalDevice, surface);
 
-	VkDeviceQueueCreateInfo queueCreateInfo = {};
-	queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-	queueCreateInfo.queueFamilyIndex = indices.graphicsFamily.value();
-	queueCreateInfo.queueCount = 1;
+	std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+	std::set<uint32_t> uniqueQueueFamilies = {indices.graphicsFamily.value(),
+											  indices.presentFamily.value()};
 
 	float queuePriority = 1.0f;
-	queueCreateInfo.pQueuePriorities = &queuePriority;
+	for(uint32_t queueFamily : uniqueQueueFamilies)
+	{
+		VkDeviceQueueCreateInfo queueCreateInfo = {};
+		queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+		queueCreateInfo.queueFamilyIndex = queueFamily;
+		queueCreateInfo.queueCount = 1;
+		queueCreateInfo.pQueuePriorities = & queuePriority;
+		queueCreateInfos.push_back(queueCreateInfo);
+	}
 
 	//TODO: specify device features
 	VkPhysicalDeviceFeatures deviceFeatures = {};
 
 	VkDeviceCreateInfo createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-	createInfo.pQueueCreateInfos = &queueCreateInfo;
-	createInfo.queueCreateInfoCount = 1;
+	createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
+	createInfo.pQueueCreateInfos = queueCreateInfos.data();
 
 	createInfo.pEnabledFeatures = &deviceFeatures;
 
@@ -119,6 +136,7 @@ void DeviceManager::createLogicalDevice()
 	}
 
 	vkGetDeviceQueue(device, indices.graphicsFamily.value(), 0, &graphicsQueue);
+	vkGetDeviceQueue(device, indices.presentFamily.value(), 0, &presentQueue);
 }
 
 void DeviceManager::cleanup()

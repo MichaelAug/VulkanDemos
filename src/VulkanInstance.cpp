@@ -8,14 +8,16 @@ VulkanInstance::VulkanInstance()
 	}
 
 	deviceManager = std::make_unique<DeviceManager>();
+	windowSurface = std::make_unique<WindowSurface>();
 }
 
-void VulkanInstance::initVulkan()
+void VulkanInstance::initVulkan(GLFWwindow *window)
 {
 	createInstance();
 	valLayers->setupDebugMessenger(instance);
-	deviceManager->pickPhysicalDevice(instance);
-	deviceManager->createLogicalDevice();
+	windowSurface->createSurface(instance, window);
+	deviceManager->pickPhysicalDevice(instance, windowSurface->surface);
+	deviceManager->createLogicalDevice(windowSurface->surface);
 }
 
 void VulkanInstance::createInstance()
@@ -85,5 +87,7 @@ void VulkanInstance::cleanup()
 	valLayers->cleanup(instance);
 	deviceManager->cleanup();
 
+	// Surface has to be destroyed before instance
+	windowSurface->cleanup(instance);
 	vkDestroyInstance(instance, nullptr);
 }

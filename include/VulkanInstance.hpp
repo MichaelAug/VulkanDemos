@@ -6,13 +6,14 @@
 #include <memory>
 #include "ValidationLayers.hpp"
 #include "DeviceManager.hpp"
+#include "WindowSurface.hpp"
 
 class VulkanInstance
 {
 public:
 	VulkanInstance();
 
-	void initVulkan();
+	void initVulkan(GLFWwindow* window);
 
 	void cleanup();
 
@@ -20,6 +21,8 @@ private:
 	std::unique_ptr<ValidationLayers> valLayers;
 
 	std::unique_ptr<DeviceManager> deviceManager;
+
+	std::unique_ptr<WindowSurface> windowSurface;
 
 	VkInstance instance;
 
