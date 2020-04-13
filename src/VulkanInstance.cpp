@@ -18,6 +18,7 @@ void VulkanInstance::initVulkan(GLFWwindow *window)
 	windowSurface->createSurface(instance, window);
 	deviceManager->pickPhysicalDevice(instance, windowSurface->surface);
 	deviceManager->createLogicalDevice(windowSurface->surface);
+	deviceManager->createSwapChain(windowSurface->surface);
 }
 
 void VulkanInstance::createInstance()

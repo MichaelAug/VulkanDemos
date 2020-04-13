@@ -8,6 +8,9 @@
 #include <memory>
 #include "VulkanInstance.hpp"
 
+const uint32_t WIDTH = 800;
+const uint32_t HEIGHT = 600;
+
 class VulkanDemos
 {
 public:
@@ -25,8 +28,7 @@ private:
     GLFWwindow *window;
     std::unique_ptr<VulkanInstance> vkInstance;
 
-    const uint32_t WIDTH = 800;
-    const uint32_t HEIGHT = 600;
+    
 
     void InitWindow();
 
