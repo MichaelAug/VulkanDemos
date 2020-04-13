@@ -35,7 +35,7 @@ public:
 	void cleanup();
 	bool checkDeviceExtensionSupport(const VkPhysicalDevice &device);
 	void createSwapChain(const VkSurfaceKHR &surface);
-
+	void createImageViews();
 private:
 	VkPhysicalDevice physicalDevice;
 	VkDevice device;
@@ -45,6 +45,7 @@ private:
 	std::vector<VkImage> swapChainImages;
 	VkFormat swapChainImageFormat;
 	VkExtent2D swapChainExtent;
+	std::vector<VkImageView> swapChainImageViews;
 
 	QueueFamilyIndices findQueueFamilies(const VkPhysicalDevice &device, const VkSurfaceKHR &surface);
 
