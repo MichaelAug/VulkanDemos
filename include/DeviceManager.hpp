@@ -36,9 +36,10 @@ public:
 	bool checkDeviceExtensionSupport(const VkPhysicalDevice &device);
 	void createSwapChain(const VkSurfaceKHR &surface);
 	void createImageViews();
+
+	VkDevice device;
 private:
 	VkPhysicalDevice physicalDevice;
-	VkDevice device;
 	VkQueue graphicsQueue;
 	VkQueue presentQueue;
 	VkSwapchainKHR swapChain;

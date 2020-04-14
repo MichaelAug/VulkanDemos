@@ -7,22 +7,22 @@
 #include "ValidationLayers.hpp"
 #include "DeviceManager.hpp"
 #include "WindowSurface.hpp"
+#include "ShaderHandler.hpp"
 
 class VulkanInstance
 {
 public:
 	VulkanInstance();
 
-	void initVulkan(GLFWwindow* window);
+	void initVulkan(GLFWwindow *window);
 
 	void cleanup();
 
 private:
 	std::unique_ptr<ValidationLayers> valLayers;
-
 	std::unique_ptr<DeviceManager> deviceManager;
-
 	std::unique_ptr<WindowSurface> windowSurface;
+	std::unique_ptr<ShaderHandler> shaderHandler;
 
 	VkInstance instance;
 

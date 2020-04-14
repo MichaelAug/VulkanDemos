@@ -9,6 +9,7 @@ VulkanInstance::VulkanInstance()
 
 	deviceManager = std::make_unique<DeviceManager>();
 	windowSurface = std::make_unique<WindowSurface>();
+	shaderHandler = std::make_unique<ShaderHandler>();
 }
 
 void VulkanInstance::initVulkan(GLFWwindow *window)
@@ -20,6 +21,7 @@ void VulkanInstance::initVulkan(GLFWwindow *window)
 	deviceManager->createLogicalDevice(windowSurface->surface);
 	deviceManager->createSwapChain(windowSurface->surface);
 	deviceManager->createImageViews();
+	shaderHandler->createGraphicsPipeline(deviceManager->device);
 }
 
 void VulkanInstance::createInstance()
