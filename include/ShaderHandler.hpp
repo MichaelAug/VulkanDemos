@@ -7,9 +7,10 @@
 class ShaderHandler
 {
 public:
-	void createGraphicsPipeline(const VkDevice &device);
-
+	void createGraphicsPipeline(const VkDevice &device, const VkExtent2D &swapChainExtent);
+	void cleanup(const VkDevice &device);
 private:
-	static std::vector<char> readFile(const std::string& filename);
-	static VkShaderModule createShaderModule(const std::vector<char>& code, const VkDevice &device);
+	VkPipelineLayout pipelineLayout;
+	static std::vector<char> readFile(const std::string &filename);
+	static VkShaderModule createShaderModule(const std::vector<char> &code, const VkDevice &device);
 };

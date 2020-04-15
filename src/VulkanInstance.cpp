@@ -21,7 +21,7 @@ void VulkanInstance::initVulkan(GLFWwindow *window)
 	deviceManager->createLogicalDevice(windowSurface->surface);
 	deviceManager->createSwapChain(windowSurface->surface);
 	deviceManager->createImageViews();
-	shaderHandler->createGraphicsPipeline(deviceManager->device);
+	shaderHandler->createGraphicsPipeline(deviceManager->device,deviceManager->swapChainExtent);
 }
 
 void VulkanInstance::createInstance()
@@ -88,6 +88,7 @@ std::vector<const char *> VulkanInstance::getRequiredExtensions()
 
 void VulkanInstance::cleanup()
 {
+	shaderHandler->cleanup(deviceManager->device);
 	valLayers->cleanup(instance);
 	deviceManager->cleanup();
 

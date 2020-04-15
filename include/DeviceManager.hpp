@@ -38,6 +38,7 @@ public:
 	void createImageViews();
 
 	VkDevice device;
+	VkExtent2D swapChainExtent;
 private:
 	VkPhysicalDevice physicalDevice;
 	VkQueue graphicsQueue;
@@ -45,7 +46,6 @@ private:
 	VkSwapchainKHR swapChain;
 	std::vector<VkImage> swapChainImages;
 	VkFormat swapChainImageFormat;
-	VkExtent2D swapChainExtent;
 	std::vector<VkImageView> swapChainImageViews;
 
 	QueueFamilyIndices findQueueFamilies(const VkPhysicalDevice &device, const VkSurfaceKHR &surface);
