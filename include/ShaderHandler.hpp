@@ -11,6 +11,7 @@ public:
 	void createRenderPass(const VkFormat& swapChainImageFormat, const VkDevice &device);
 	void cleanup(const VkDevice &device);
 private:
+	VkPipeline graphicsPipeline;
 	VkRenderPass renderPass;
 	VkPipelineLayout pipelineLayout;
 	static std::vector<char> readFile(const std::string &filename);
