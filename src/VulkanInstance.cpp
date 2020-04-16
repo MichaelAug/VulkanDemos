@@ -21,6 +21,7 @@ void VulkanInstance::initVulkan(GLFWwindow *window)
 	deviceManager->createLogicalDevice(windowSurface->surface);
 	deviceManager->createSwapChain(windowSurface->surface);
 	deviceManager->createImageViews();
+	shaderHandler->createRenderPass(deviceManager->swapChainImageFormat, deviceManager->device);
 	shaderHandler->createGraphicsPipeline(deviceManager->device,deviceManager->swapChainExtent);
 }
 

@@ -8,8 +8,10 @@ class ShaderHandler
 {
 public:
 	void createGraphicsPipeline(const VkDevice &device, const VkExtent2D &swapChainExtent);
+	void createRenderPass(const VkFormat& swapChainImageFormat, const VkDevice &device);
 	void cleanup(const VkDevice &device);
 private:
+	VkRenderPass renderPass;
 	VkPipelineLayout pipelineLayout;
 	static std::vector<char> readFile(const std::string &filename);
 	static VkShaderModule createShaderModule(const std::vector<char> &code, const VkDevice &device);
