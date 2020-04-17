@@ -22,7 +22,7 @@ project(VulkanDemos)
 # add the executable
 add_executable(${PROJECT_NAME} ${SOURCES})
 
-# can Define VT_DEBUG for debug calls (remove in release) by adding -DVT_DEBUG
+# define NDEBUG to build without validation layers 		(-DNDEBUG)
 target_compile_options(${PROJECT_NAME} PUBLIC -Wall -pedantic -Wextra)
 
 target_link_libraries(${PROJECT_NAME}

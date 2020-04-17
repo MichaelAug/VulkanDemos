@@ -36,11 +36,13 @@ public:
 	bool checkDeviceExtensionSupport(const VkPhysicalDevice &device);
 	void createSwapChain(const VkSurfaceKHR &surface);
 	void createImageViews();
+	void createFramebuffers(const VkRenderPass &renderPass);
 
 	VkDevice device;
 	VkExtent2D swapChainExtent;
 	VkFormat swapChainImageFormat;
 private:
+	std::vector<VkFramebuffer> swapChainFrameBuffers;
 	VkPhysicalDevice physicalDevice;
 	VkQueue graphicsQueue;
 	VkQueue presentQueue;
