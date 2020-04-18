@@ -12,8 +12,9 @@ public:
 	void cleanup(const VkDevice &device);
 
 	VkRenderPass renderPass;
-private:
 	VkPipeline graphicsPipeline;
+private:
+	
 	
 	VkPipelineLayout pipelineLayout;
 	static std::vector<char> readFile(const std::string &filename);

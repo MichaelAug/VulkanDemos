@@ -37,11 +37,15 @@ public:
 	void createSwapChain(const VkSurfaceKHR &surface);
 	void createImageViews();
 	void createFramebuffers(const VkRenderPass &renderPass);
+	void createCommandPool(VkSurfaceKHR &surface);
+	void createCommandBuffers(const VkRenderPass &renderPass, const VkPipeline &graphicsPipeline);
 
 	VkDevice device;
 	VkExtent2D swapChainExtent;
 	VkFormat swapChainImageFormat;
 private:
+	std::vector<VkCommandBuffer> commandBuffers;
+	VkCommandPool commandPool;
 	std::vector<VkFramebuffer> swapChainFrameBuffers;
 	VkPhysicalDevice physicalDevice;
 	VkQueue graphicsQueue;
