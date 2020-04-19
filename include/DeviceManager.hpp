@@ -39,20 +39,31 @@ public:
 	void createFramebuffers(const VkRenderPass &renderPass);
 	void createCommandPool(VkSurfaceKHR &surface);
 	void createCommandBuffers(const VkRenderPass &renderPass, const VkPipeline &graphicsPipeline);
-
+	void CreateSyncObjects();
 	VkDevice device;
 	VkExtent2D swapChainExtent;
 	VkFormat swapChainImageFormat;
-private:
+	VkSwapchainKHR swapChain;
+	std::vector<VkSemaphore> imageAvailableSemaphores;
+	std::vector<VkSemaphore> renderFinishedSemaphores;
+
+	std::vector<VkFence> inFlightFences;
+	std::vector<VkFence> imagesInFlight;
 	std::vector<VkCommandBuffer> commandBuffers;
+	VkQueue graphicsQueue;
+	VkQueue presentQueue;
+	size_t currentFrame = 0;
+private:
+	
+	
 	VkCommandPool commandPool;
 	std::vector<VkFramebuffer> swapChainFrameBuffers;
 	VkPhysicalDevice physicalDevice;
-	VkQueue graphicsQueue;
-	VkQueue presentQueue;
-	VkSwapchainKHR swapChain;
-	std::vector<VkImage> swapChainImages;
 	
+	
+	
+	std::vector<VkImage> swapChainImages;
+
 	std::vector<VkImageView> swapChainImageViews;
 
 	QueueFamilyIndices findQueueFamilies(const VkPhysicalDevice &device, const VkSurfaceKHR &surface);

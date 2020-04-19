@@ -153,6 +153,13 @@ void DeviceManager::createLogicalDevice(VkSurfaceKHR &surface)
 
 void DeviceManager::cleanup()
 {
+	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
+	{
+		vkDestroySemaphore(device, renderFinishedSemaphores[i], nullptr);
+		vkDestroySemaphore(device, imageAvailableSemaphores[i], nullptr);
+		vkDestroyFence(device, inFlightFences[i],nullptr);
+	}
+
 	vkDestroyCommandPool(device, commandPool, nullptr);
 
 	for (auto framebuffer : swapChainFrameBuffers)
@@ -431,7 +438,7 @@ void DeviceManager::createCommandBuffers(const VkRenderPass &renderPass, const V
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 		renderPassInfo.renderPass = renderPass;
 		renderPassInfo.framebuffer = swapChainFrameBuffers[i];
-		renderPassInfo.renderArea.offset = {0,0};
+		renderPassInfo.renderArea.offset = {0, 0};
 		renderPassInfo.renderArea.extent = swapChainExtent;
 
 		VkClearValue clearColor = {0.0f, 0.0f, 0.0f, 1.0f};
@@ -451,9 +458,34 @@ void DeviceManager::createCommandBuffers(const VkRenderPass &renderPass, const V
 
 		vkCmdEndRenderPass(commandBuffers[i]);
 
-		if(vkEndCommandBuffer(commandBuffers[i]) != VK_SUCCESS)
+		if (vkEndCommandBuffer(commandBuffers[i]) != VK_SUCCESS)
 		{
 			throw std::runtime_error("failed to record command buffer");
+		}
+	}
+}
+
+void DeviceManager::CreateSyncObjects()
+{
+	imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
+	renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
+	inFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
+	imagesInFlight.resize(swapChainImages.size(), VK_NULL_HANDLE);
+
+	VkSemaphoreCreateInfo semaphoreInfo = {};
+	semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
+	VkFenceCreateInfo fenceInfo = {};
+	fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+	fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+
+	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
+	{
+		if (vkCreateSemaphore(device, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]) != VK_SUCCESS 
+		|| vkCreateSemaphore(device, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]) != VK_SUCCESS
+		|| vkCreateFence(device, &fenceInfo, nullptr, &inFlightFences[i]) != VK_SUCCESS)
+		{
+			throw std::runtime_error("failed to create synchronisation objects for a frame");
 		}
 	}
 }

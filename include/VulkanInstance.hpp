@@ -17,10 +17,11 @@ public:
 	void initVulkan(GLFWwindow *window);
 
 	void cleanup();
+	std::unique_ptr<DeviceManager> deviceManager;
 
 private:
 	std::unique_ptr<ValidationLayers> valLayers;
-	std::unique_ptr<DeviceManager> deviceManager;
+
 	std::unique_ptr<WindowSurface> windowSurface;
 	std::unique_ptr<ShaderHandler> shaderHandler;
 

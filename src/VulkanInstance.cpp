@@ -26,6 +26,7 @@ void VulkanInstance::initVulkan(GLFWwindow *window)
 	deviceManager->createFramebuffers(shaderHandler->renderPass);
 	deviceManager->createCommandPool(windowSurface->surface);
 	deviceManager->createCommandBuffers(shaderHandler->renderPass, shaderHandler->graphicsPipeline);
+	deviceManager->CreateSyncObjects();
 }
 
 void VulkanInstance::createInstance()
