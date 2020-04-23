@@ -1,36 +1,13 @@
-#include "VulkanDemos.hpp"
-#include "VulkanInstance.hpp"
+#include "Renderer.hpp"
 
-void VulkanDemos::run()
+Renderer::Renderer(std::shared_ptr<VulkanInstance> vkInst)
 {
-	InitWindow();
-	vkInstance->initVulkan(window);
-	mainLoop();
-	cleanup();
+	this->vkInst = vkInst;  
 }
 
-VulkanDemos::VulkanDemos()
+void Renderer::mainLoop(GLFWwindow *window)
 {
-	vkInstance = std::make_unique<VulkanInstance>();
-}
-
-void VulkanDemos::InitWindow()
-{
-	// Init GLFW library
-	glfwInit();
-
-	// Tell GLFW not to create OpenGL context
-	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-
-	// Disable screen resizing (can't handle resizable windows for now)
-	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-
-	//parameters: width, height, title, monitor, OpenGL parameter
-	window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr);
-}
-
-void VulkanDemos::mainLoop()
-{
+	auto vkInstance = vkInst.lock();
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
@@ -40,21 +17,13 @@ void VulkanDemos::mainLoop()
 	vkDeviceWaitIdle(vkInstance->deviceManager->device);
 }
 
-void VulkanDemos::cleanup()
-{
-	vkInstance->cleanup();
-
-	glfwDestroyWindow(window);
-
-	glfwTerminate();
-}
-
 /*Functions:
 	acquire image from swap chain
 	execute command buffer with image as attachment in framebuffer
 	return image to swap chain */
-void VulkanDemos::drawFrame(std::vector<VkSemaphore> &imageAvailableSemaphores, std::vector<VkSemaphore> &renderFinishedSemaphores, size_t &currentFrame)
+void Renderer::drawFrame(std::vector<VkSemaphore> &imageAvailableSemaphores, std::vector<VkSemaphore> &renderFinishedSemaphores, size_t &currentFrame)
 {
+	auto vkInstance = vkInst.lock();
 	vkWaitForFences(vkInstance->deviceManager->device, 1, &vkInstance->deviceManager->inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
 	
 	uint32_t imageIndex;

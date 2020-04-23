@@ -3,7 +3,8 @@
 #include "ValidationLayers.hpp"
 #include <set>
 #include <cstdint>
-#include <VulkanDemos.hpp>
+#include "WindowSurface.hpp"
+#include "Renderer.hpp"
 #include <algorithm>
 
 DeviceManager::DeviceManager() : physicalDevice(VK_NULL_HANDLE) {}

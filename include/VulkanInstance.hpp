@@ -12,20 +12,20 @@
 class VulkanInstance
 {
 public:
-	VulkanInstance();
+	// WON'T NEED WINDOW SURFACE HERE AFTER FULL REFACTOR
+	VulkanInstance(std::shared_ptr<WindowSurface> WindowSurface);
 
-	void initVulkan(GLFWwindow *window);
+	void initVulkan();
 
 	void cleanup();
 	std::unique_ptr<DeviceManager> deviceManager;
 
-private:
-	std::unique_ptr<ValidationLayers> valLayers;
-
-	std::unique_ptr<WindowSurface> windowSurface;
-	std::unique_ptr<ShaderHandler> shaderHandler;
-
 	VkInstance instance;
+
+private:
+	std::weak_ptr<WindowSurface> winSurf;
+	std::unique_ptr<ValidationLayers> valLayers;
+	std::unique_ptr<ShaderHandler> shaderHandler;
 
 	std::vector<const char *> getRequiredExtensions();
 
