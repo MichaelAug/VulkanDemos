@@ -1,46 +1,22 @@
 #pragma once
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
-#include <optional>
 #include <vector>
+#include "LogicalDevice.hpp"
 
-const std::vector<const char *> deviceExtensions = {
-	VK_KHR_SWAPCHAIN_EXTENSION_NAME};
-
-struct QueueFamilyIndices
-{
-	//optional because need to see if any value is returned
-	std::optional<uint32_t> graphicsFamily;
-	std::optional<uint32_t> presentFamily;
-
-	bool isComplete()
-	{
-		return graphicsFamily.has_value();
-	}
-};
-
-struct SwapChainSupportDetails
-{
-	VkSurfaceCapabilitiesKHR capabilities;
-	std::vector<VkSurfaceFormatKHR> formats;
-	std::vector<VkPresentModeKHR> presentModes;
-};
 
 class DeviceManager
 {
 public:
-	DeviceManager();
-	void pickPhysicalDevice(VkInstance &instance, VkSurfaceKHR &surface);
-	void createLogicalDevice(VkSurfaceKHR &surface);
+	DeviceManager(std::shared_ptr<LogicalDevice> logDev);
+
 	void cleanup();
-	bool checkDeviceExtensionSupport(const VkPhysicalDevice &device);
 	void createSwapChain(const VkSurfaceKHR &surface);
 	void createImageViews();
 	void createFramebuffers(const VkRenderPass &renderPass);
 	void createCommandPool(VkSurfaceKHR &surface);
 	void createCommandBuffers(const VkRenderPass &renderPass, const VkPipeline &graphicsPipeline);
 	void CreateSyncObjects();
-	VkDevice device;
 	VkExtent2D swapChainExtent;
 	VkFormat swapChainImageFormat;
 	VkSwapchainKHR swapChain;
@@ -50,15 +26,12 @@ public:
 	std::vector<VkFence> inFlightFences;
 	std::vector<VkFence> imagesInFlight;
 	std::vector<VkCommandBuffer> commandBuffers;
-	VkQueue graphicsQueue;
-	VkQueue presentQueue;
 	size_t currentFrame = 0;
 private:
-	
+	std::weak_ptr<LogicalDevice> logicalDevice;	
 	
 	VkCommandPool commandPool;
 	std::vector<VkFramebuffer> swapChainFrameBuffers;
-	VkPhysicalDevice physicalDevice;
 	
 	
 	
@@ -66,10 +39,7 @@ private:
 
 	std::vector<VkImageView> swapChainImageViews;
 
-	QueueFamilyIndices findQueueFamilies(const VkPhysicalDevice &device, const VkSurfaceKHR &surface);
-
-	bool isDeviceSuitable(const VkPhysicalDevice &device, const VkSurfaceKHR &surface);
-	SwapChainSupportDetails querySwapChainSupport(const VkPhysicalDevice &device, const VkSurfaceKHR &surface);
+	DeviceManager(){}
 	VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &availableFormats);
 	VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR> &availablePresentModes);
 
