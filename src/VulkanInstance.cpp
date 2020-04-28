@@ -1,4 +1,5 @@
 #include "VulkanInstance.hpp"
+#include <stdexcept>
 
 VulkanInstance::VulkanInstance()
 {
@@ -6,27 +7,12 @@ VulkanInstance::VulkanInstance()
 	{
 		valLayers = std::make_unique<ValidationLayers>();
 	}
-
-	deviceManager = std::make_unique<DeviceManager>();
-	windowSurface = std::make_unique<WindowSurface>();
-	shaderHandler = std::make_unique<ShaderHandler>();
 }
 
-void VulkanInstance::initVulkan(GLFWwindow *window)
+void VulkanInstance::initVulkan()
 {
 	createInstance();
 	valLayers->setupDebugMessenger(instance);
-	windowSurface->createSurface(instance, window);
-	deviceManager->pickPhysicalDevice(instance, windowSurface->surface);
-	deviceManager->createLogicalDevice(windowSurface->surface);
-	deviceManager->createSwapChain(windowSurface->surface);
-	deviceManager->createImageViews();
-	shaderHandler->createRenderPass(deviceManager->swapChainImageFormat, deviceManager->device);
-	shaderHandler->createGraphicsPipeline(deviceManager->device,deviceManager->swapChainExtent);
-	deviceManager->createFramebuffers(shaderHandler->renderPass);
-	deviceManager->createCommandPool(windowSurface->surface);
-	deviceManager->createCommandBuffers(shaderHandler->renderPass, shaderHandler->graphicsPipeline);
-	deviceManager->CreateSyncObjects();
 }
 
 void VulkanInstance::createInstance()
@@ -93,11 +79,6 @@ std::vector<const char *> VulkanInstance::getRequiredExtensions()
 
 void VulkanInstance::cleanup()
 {
-	shaderHandler->cleanup(deviceManager->device);
 	valLayers->cleanup(instance);
-	deviceManager->cleanup();
-
-	// Surface has to be destroyed before instance
-	windowSurface->cleanup(instance);
 	vkDestroyInstance(instance, nullptr);
 }

@@ -1,8 +1,9 @@
-#include "VulkanDemos.hpp"
+#include "Engine.hpp"
+#include <iostream>
 
 int main()
 {
-    VulkanDemos app;
+    Engine app;
     try
     {
         app.run();
