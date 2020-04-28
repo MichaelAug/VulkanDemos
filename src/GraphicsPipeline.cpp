@@ -1,6 +1,6 @@
-#include "ShaderHandler.hpp"
+#include "GraphicsPipeline.hpp"
 
-void ShaderHandler::createGraphicsPipeline(const VkDevice &device, const VkExtent2D &swapChainExtent)
+void GraphicsPipeline::createGraphicsPipeline(const VkDevice &device, const VkExtent2D &swapChainExtent, VkRenderPass &renderPass)
 {
 	//relative path from where the program is run
 	auto vertShaderCode = readFile("shaders/vert.spv");
@@ -145,7 +145,7 @@ void ShaderHandler::createGraphicsPipeline(const VkDevice &device, const VkExten
 	vkDestroyShaderModule(device, vertShaderModule, nullptr);
 }
 
-std::vector<char> ShaderHandler::readFile(const std::string &filename)
+std::vector<char> GraphicsPipeline::readFile(const std::string &filename)
 {
 	//start reading at the end of file and in binary mode
 	std::ifstream file(filename, std::ios::ate | std::ios::binary);
@@ -170,7 +170,7 @@ std::vector<char> ShaderHandler::readFile(const std::string &filename)
 	return buffer;
 }
 
-VkShaderModule ShaderHandler::createShaderModule(const std::vector<char> &code, const VkDevice &device)
+VkShaderModule GraphicsPipeline::createShaderModule(const std::vector<char> &code, const VkDevice &device)
 {
 	VkShaderModuleCreateInfo createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
@@ -186,53 +186,8 @@ VkShaderModule ShaderHandler::createShaderModule(const std::vector<char> &code, 
 	return shaderModule;
 }
 
-void ShaderHandler::cleanup(const VkDevice &device)
+void GraphicsPipeline::cleanup(const VkDevice &device)
 {
 	vkDestroyPipeline(device,graphicsPipeline, nullptr);
 	vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
-	vkDestroyRenderPass(device, renderPass, nullptr);
-}
-
-void ShaderHandler::createRenderPass(const VkFormat &swapChainImageFormat, const VkDevice &device)
-{
-	VkAttachmentDescription colorAttachment = {};
-	colorAttachment.format = swapChainImageFormat;
-	colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
-	colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-	colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-	colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-	colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-	colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-	colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-
-	VkAttachmentReference colorAttachmentRef = {};
-	colorAttachmentRef.attachment = 0;
-	colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-
-	VkSubpassDescription subpass = {};
-	subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-	subpass.colorAttachmentCount = 1;
-	subpass.pColorAttachments = &colorAttachmentRef;
-
-	VkSubpassDependency dependency = {};
-	dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
-	dependency.dstSubpass = 0;
-	dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-	dependency.srcAccessMask = 0;
-	dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-	dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-
-	VkRenderPassCreateInfo renderPassInfo = {};
-	renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-	renderPassInfo.attachmentCount = 1;
-	renderPassInfo.pAttachments = &colorAttachment;
-	renderPassInfo.subpassCount = 1;
-	renderPassInfo.pSubpasses = &subpass;
-	renderPassInfo.dependencyCount = 1;
-	renderPassInfo.pDependencies = &dependency;
-
-	if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS)
-	{
-		throw std::runtime_error("failed to create render pass");
-	}
 }

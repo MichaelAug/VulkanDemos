@@ -9,15 +9,11 @@ void WindowSurface::createSurface(VkInstance &instance)
 	}
 }
 
-void WindowSurface::cleanup(VkInstance &instance)
+void WindowSurface::cleanup()
 {
-	vkDestroySurfaceKHR(instance, surface, nullptr);
-
-	glfwTerminate();
-
 	glfwDestroyWindow(window);
+	glfwTerminate();
 }
-
 
 void WindowSurface::InitWindow()
 {
@@ -32,4 +28,9 @@ void WindowSurface::InitWindow()
 
 	//parameters: width, height, title, monitor, OpenGL parameter
 	window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr);
+}
+
+void WindowSurface::destroyInstance(VkInstance &instance)
+{
+	vkDestroySurfaceKHR(instance, surface, nullptr);
 }

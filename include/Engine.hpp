@@ -10,6 +10,8 @@
 class Engine
 {
 public:
+    void Init();
+
     Engine();
 
     void run();

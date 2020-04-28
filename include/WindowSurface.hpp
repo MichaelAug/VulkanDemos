@@ -9,8 +9,9 @@ class WindowSurface
 {
 public:
 	void createSurface(VkInstance &instance);
-	void cleanup(VkInstance &instance);
+	void cleanup();
 	void InitWindow();
+	void destroyInstance(VkInstance &instance);
 
 	VkSurfaceKHR surface;
     GLFWwindow *window;
