@@ -40,7 +40,7 @@ VkPresentModeKHR SwapChain::chooseSwapPresentMode(const std::vector<VkPresentMod
 	return VK_PRESENT_MODE_FIFO_KHR;
 }
 
-VkExtent2D SwapChain::chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities)
+VkExtent2D SwapChain::chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities, GLFWwindow *window)
 {
 	if (capabilities.currentExtent.width != UINT32_MAX)
 	{
@@ -48,7 +48,10 @@ VkExtent2D SwapChain::chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilit
 	}
 	else
 	{
-		VkExtent2D actualExtent = {WIDTH, HEIGHT};
+		int width, height;
+		glfwGetFramebufferSize(window, &width, &height);
+
+		VkExtent2D actualExtent = {static_cast<uint32_t>(width), static_cast<uint32_t>(height)};
 
 		actualExtent.width = std::clamp(actualExtent.width, capabilities.minImageExtent.width, capabilities.maxImageExtent.width);
 		actualExtent.height = std::clamp(actualExtent.height, capabilities.minImageExtent.height, capabilities.maxImageExtent.height);
@@ -57,12 +60,12 @@ VkExtent2D SwapChain::chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilit
 	}
 }
 
-void SwapChain::createSwapChain(const VkSurfaceKHR &surface, std::shared_ptr<LogicalDevice> &logDev)
+void SwapChain::createSwapChain(const VkSurfaceKHR &surface, std::shared_ptr<LogicalDevice> &logDev, GLFWwindow *window)
 {
 	SwapChainSupportDetails swapChainSupport = PhysicalDevice::querySwapChainSupport(logDev->getPhysicalDevice(), surface);
 	VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
 	VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);
-	VkExtent2D extent = chooseSwapExtent(swapChainSupport.capabilities);
+	VkExtent2D extent = chooseSwapExtent(swapChainSupport.capabilities, window);
 
 	/*recommended to use more than the minimum image count to not have to
 		wait for driver to complete internal operations before acquiring another

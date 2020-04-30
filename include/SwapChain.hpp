@@ -7,7 +7,7 @@
 class SwapChain
 {
 public:
-	void createSwapChain(const VkSurfaceKHR &surface, std::shared_ptr<LogicalDevice> &logDev);
+	void createSwapChain(const VkSurfaceKHR &surface, std::shared_ptr<LogicalDevice> &logDev, GLFWwindow *window);
 	void cleanup(VkDevice &device);
 	
 	VkSwapchainKHR swapChain;
@@ -21,5 +21,5 @@ private:
 	VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR> &availablePresentModes);
 
 	// Swap extent - resolution of images
-	VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities);
+	VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities, GLFWwindow *window);
 };

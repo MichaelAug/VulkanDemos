@@ -14,6 +14,11 @@ public:
 	void destroyInstance(VkInstance &instance);
 
 	VkSurfaceKHR surface;
-    GLFWwindow *window;
+	GLFWwindow *window;
+	bool framebufferResized = false;
+
 private:
+	const char *windowTitle = "Vulkan";
+
+	static void framebufferResizeCallback(GLFWwindow *window, int width, int height);
 };

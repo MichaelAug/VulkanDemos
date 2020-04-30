@@ -1,6 +1,12 @@
 #include "WindowSurface.hpp"
 #include <stdexcept>
 
+void WindowSurface::framebufferResizeCallback(GLFWwindow *window, int width, int height)
+{
+	auto app = reinterpret_cast<WindowSurface *>(glfwGetWindowUserPointer(window));
+	app->framebufferResized = true;
+}
+
 void WindowSurface::createSurface(VkInstance &instance)
 {
 	if (glfwCreateWindowSurface(instance, window, nullptr, &surface) != VK_SUCCESS)
@@ -23,11 +29,15 @@ void WindowSurface::InitWindow()
 	// Tell GLFW not to create OpenGL context
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
-	// Disable screen resizing (can't handle resizable windows for now)
-	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+	// Enable screen resizing
+	glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
 	//parameters: width, height, title, monitor, OpenGL parameter
-	window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr);
+	window = glfwCreateWindow(WIDTH, HEIGHT, windowTitle, nullptr, nullptr);
+
+	glfwSetWindowUserPointer(window, this);
+
+	glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
 }
 
 void WindowSurface::destroyInstance(VkInstance &instance)

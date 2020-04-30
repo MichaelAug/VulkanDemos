@@ -7,7 +7,7 @@ CommandBuffers::CommandBuffers(std::shared_ptr<LogicalDevice> logicalDevice)
 	logDev = logicalDevice;
 }
 
-void CommandBuffers::cleanup()
+void CommandBuffers::cleanupCommandPool()
 {
 	auto logicalDevice = logDev.lock();
 	
@@ -88,3 +88,8 @@ void CommandBuffers::createCommandBuffers(const VkRenderPass &renderPass, const 
 		}
 	}
 }
+
+	void CommandBuffers::cleanupCommandBuffers(VkDevice &device)
+	{
+		vkFreeCommandBuffers(device, commandPool, static_cast<uint32_t>(commandBuffers.size()), commandBuffers.data());
+	}

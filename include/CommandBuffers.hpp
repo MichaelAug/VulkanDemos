@@ -11,7 +11,8 @@ class CommandBuffers
 {
 public:
 	CommandBuffers(std::shared_ptr<LogicalDevice> logicalDevice);
-	void cleanup();
+	void cleanupCommandPool();
+	void cleanupCommandBuffers(VkDevice &device);
 	void createCommandPool(VkSurfaceKHR &surface);
 	void createCommandBuffers(const VkRenderPass &renderPass, const VkPipeline &graphicsPipeline, std::unique_ptr<SwapChain> &swpChain);
 	std::vector<VkCommandBuffer> commandBuffers;

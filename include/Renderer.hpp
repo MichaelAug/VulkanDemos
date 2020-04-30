@@ -20,6 +20,8 @@ public:
 	void mainLoop(GLFWwindow *window);
 	void drawFrame(std::vector<VkSemaphore> &imageAvailableSemaphores, std::vector<VkSemaphore> &renderFinishedSemaphores);
 	void cleanup();
+	void recreateSwapChain();
+	void cleanupSwapChain();
 
 private:
 	size_t currentFrame = 0;
